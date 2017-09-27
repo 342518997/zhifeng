@@ -2,6 +2,7 @@ package com.zhifeng.dao;
 
 
 import com.zhifeng.model.Resource;
+import com.zhifeng.spring.JdbcTemplateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +23,7 @@ import java.util.List;
 @Repository
 public class ResourceDaoImpl implements ResourceDao {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate = JdbcTemplateUtils.jdbcTemplate();
     
     public Resource createResource(final Resource resource) {
         final String sql = "insert into sys_resource(name, type, url, permission, parent_id, parent_ids, available) values(?,?,?,?,?,?,?)";

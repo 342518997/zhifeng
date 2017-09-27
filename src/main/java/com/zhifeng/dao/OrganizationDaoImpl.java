@@ -2,6 +2,7 @@ package com.zhifeng.dao;
 
 
 import com.zhifeng.model.Organization;
+import com.zhifeng.spring.JdbcTemplateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +24,7 @@ import java.util.List;
 public class OrganizationDaoImpl implements OrganizationDao {
     
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate = JdbcTemplateUtils.jdbcTemplate();
 
     public Organization createOrganization(final Organization organization) {
         final String sql = "insert into sys_organization( name, parent_id, parent_ids, available) values(?,?,?,?)";
@@ -89,7 +90,7 @@ public class OrganizationDaoImpl implements OrganizationDao {
 
     public void move(Organization source, Organization target) {
         String moveSourceSql = "update sys_organization set parent_id=?,parent_ids=? where id=?";
-        jdbcTemplate.update(moveSourceSql, target.getId(), target.getParentIds(), source.getId());
+        jdbcTemplate.update(moveSourceSql, target.getId(), target.makeSelfAsParentIds(), source.getId());
         String moveSourceDescendantsSql = "update sys_organization set parent_ids=concat(?, substring(parent_ids, length(?))) where parent_ids like ?";
         jdbcTemplate.update(moveSourceDescendantsSql, target.makeSelfAsParentIds(), source.makeSelfAsParentIds(), source.makeSelfAsParentIds() + "%");
     }
