@@ -4,10 +4,12 @@ package com.zhifeng.web.taglib;
 import com.zhifeng.model.Organization;
 import com.zhifeng.model.Resource;
 import com.zhifeng.model.Role;
+import com.zhifeng.model.User;
 import com.zhifeng.service.OrganizationService;
 import com.zhifeng.service.ResourceService;
 import com.zhifeng.service.RoleService;
 
+import com.zhifeng.service.UserService;
 import com.zhifeng.spring.SpringUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -19,6 +21,7 @@ import java.util.Collection;
  * <p>Version: 1.0
  */
 public class Functions {
+
 
     public static boolean in(Iterable iterable, Object element) {
         if(iterable == null) {
@@ -114,9 +117,18 @@ public class Functions {
         return s.toString();
     }
 
+    public static String username(Long userId) {
+        User user = getUserService().findOne(userId);
+        if(user == null) {
+            return "";
+        }
+        return user.getUsername();
+    }
+
     private static OrganizationService organizationService;
     private static RoleService roleService;
     private static ResourceService resourceService;
+    private static UserService userService;
 
     public static OrganizationService getOrganizationService() {
         if(organizationService == null) {
@@ -138,5 +150,10 @@ public class Functions {
         }
         return resourceService;
     }
+    public static UserService getUserService() {
+        if(userService == null) {
+            userService = SpringUtils.getBean(UserService.class);
+        }
+        return userService;
+    }
 }
-
